@@ -1,0 +1,43 @@
+
+[
+  {
+    "id": 1,
+    "nama": "Andi Saputra",
+    "noAbsen": 1
+  },
+  {
+    "id": 2,
+    "nama": "Budi Santoso",
+    "noAbsen": 2
+  },
+  {
+    "id": 3,
+    "nama": "Citra Amelia",
+    "noAbsen": 3
+  },
+  {
+    "id": 4,
+    "nama": "Deni Kurniawan",
+    "noAbsen": 4
+  },
+  {
+    "id": 5,
+    "nama": "Eka Putri",
+    "noAbsen": 5
+  },
+  {
+    "id": 6,
+    "nama": "Fajar Ramadhan",
+    "noAbsen": 6
+  },
+  {
+    "id": 7,
+    "nama": "Gita Maharani",
+    "noAbsen": 7
+  },
+  {
+    "id": 8,
+    "nama": "Hendra Wijaya",
+    "noAbsen": 8
+  }
+]

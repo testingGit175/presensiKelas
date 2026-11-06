@@ -1,0 +1,6 @@
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/siswa.json
