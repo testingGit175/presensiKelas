@@ -30,11 +30,12 @@ class _PresensiPageState extends State<PresensiPage> {
         daftarSiswa = data;
         loading = false;
       });
-    } catch (e) {
-      setState(() {
-        loading = false;
-      });
-    }
+    }} catch (e) {
+        setState(() {
+          loading = false;
+          errorMessage = 'Gagal membaca data siswa: $e';
+    });
+}
   }
 
   // Menghitung siswa yang hadir
@@ -59,10 +60,14 @@ class _PresensiPageState extends State<PresensiPage> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : daftarSiswa.isEmpty
-              ? const Center(
-                  child: Text('Data siswa kosong atau gagal dibaca'),
-                )
+          : : errorMessage != null
+    ? Center(
+        child: Text(errorMessage!),
+      )
+    : daftarSiswa.isEmpty
+        ? const Center(
+            child: Text('Data siswa kosong'),
+          )
               : Column(
                   children: [
                     const Padding(
