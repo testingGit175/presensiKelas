@@ -1,7 +1,6 @@
-
 import 'package:flutter/material.dart';
 import '../models/siswa.dart';
-import '../services/siswa_service.dart';
+import '../sevices/siswa_service.dart';
 import 'rekap_page.dart';
 
 class PresensiPage extends StatefulWidget {
@@ -25,12 +24,14 @@ class _PresensiPageState extends State<PresensiPage> {
   Future<void> loadSiswa() async {
     try {
       final data = await SiswaService().ambilDataSiswa();
+      if (!mounted) return;
 
       setState(() {
         daftarSiswa = data;
         loading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         loading = false;
       });
@@ -38,14 +39,10 @@ class _PresensiPageState extends State<PresensiPage> {
   }
 
   // Menghitung siswa yang hadir
-  int get jumlahHadir {
-    return daftarSiswa.where((s) => s.hadir).length;
-  }
+  int get jumlahHadir => daftarSiswa.where((s) => s.hadir).length;
 
   // Menghitung siswa yang tidak hadir
-  int get jumlahTidakHadir {
-    return daftarSiswa.length - jumlahHadir;
-  }
+  int get jumlahTidakHadir => daftarSiswa.length - jumlahHadir;
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +51,8 @@ class _PresensiPageState extends State<PresensiPage> {
         title: const Text('Presensi XI RPL'),
         centerTitle: true,
       ),
-
       body: loading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
+          ? const Center(child: CircularProgressIndicator())
           : daftarSiswa.isEmpty
               ? const Center(
                   child: Text('Data siswa kosong atau gagal dibaca'),
@@ -75,21 +69,15 @@ class _PresensiPageState extends State<PresensiPage> {
                         ),
                       ),
                     ),
-
-                    // Daftar siswa
                     Expanded(
                       child: ListView.builder(
                         itemCount: daftarSiswa.length,
                         itemBuilder: (context, index) {
                           final siswa = daftarSiswa[index];
-
                           return CheckboxListTile(
                             title: Text(siswa.nama),
-                            subtitle: Text(
-                              'No. Absen: ${siswa.noAbsen}',
-                            ),
+                            subtitle: Text('No. Absen: ${siswa.noAbsen}'),
                             value: siswa.hadir,
-
                             onChanged: (value) {
                               setState(() {
                                 siswa.hadir = value ?? false;
@@ -99,8 +87,6 @@ class _PresensiPageState extends State<PresensiPage> {
                         },
                       ),
                     ),
-
-                    // Tombol simpan
                     Padding(
                       padding: const EdgeInsets.all(16),
                       child: SizedBox(
@@ -110,11 +96,9 @@ class _PresensiPageState extends State<PresensiPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) {
-                                  return RekapPage(
-                                    daftarSiswa: daftarSiswa,
-                                  );
-                                },
+                                builder: (context) => RekapPage(
+                                  daftarSiswa: daftarSiswa,
+                                ),
                               ),
                             );
                           },
