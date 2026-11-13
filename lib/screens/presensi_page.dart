@@ -1,6 +1,7 @@
+
 import 'package:flutter/material.dart';
 import '../models/siswa.dart';
-import '../sevices/siswa_service.dart';
+import '../services/siswa_service.dart';
 import 'rekap_page.dart';
 
 class PresensiPage extends StatefulWidget {
@@ -12,7 +13,9 @@ class PresensiPage extends StatefulWidget {
 
 class _PresensiPageState extends State<PresensiPage> {
   List<Siswa> daftarSiswa = [];
+
   bool loading = true;
+  String? errorMessage;
 
   @override
   void initState() {
@@ -20,117 +23,262 @@ class _PresensiPageState extends State<PresensiPage> {
     loadSiswa();
   }
 
-  // Mengambil data siswa dari JSON
+  // Mengambil data siswa dari file JSON
   Future<void> loadSiswa() async {
     try {
       final data = await SiswaService().ambilDataSiswa();
+
       if (!mounted) return;
 
       setState(() {
         daftarSiswa = data;
         loading = false;
+        errorMessage = null;
       });
-<<<<<<< HEAD
-    }} catch (e) {
-        setState(() {
-          loading = false;
-          errorMessage = 'Gagal membaca data siswa: $e';
-    });
-}
-=======
     } catch (e) {
       if (!mounted) return;
+
       setState(() {
         loading = false;
+        errorMessage = 'Gagal mengambil data siswa: $e';
       });
     }
->>>>>>> a39f153a267fd9260e2ac8e77bbdc69828e82f6b
   }
 
-  // Menghitung siswa yang hadir
-  int get jumlahHadir => daftarSiswa.where((s) => s.hadir).length;
+  // Menghitung jumlah seluruh siswa
+  int get jumlahSiswa {
+    return daftarSiswa.length;
+  }
 
-  // Menghitung siswa yang tidak hadir
-  int get jumlahTidakHadir => daftarSiswa.length - jumlahHadir;
+  // Menghitung jumlah siswa yang hadir
+  int get jumlahHadir {
+    return daftarSiswa.where((siswa) => siswa.hadir).length;
+  }
+
+  // Menghitung jumlah siswa yang tidak hadir
+  int get jumlahTidakHadir {
+    return jumlahSiswa - jumlahHadir;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Presensi XI RPL'),
+        title: const Text(
+          'Presensi XI RPL',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.green,
+        foregroundColor: Colors.white,
       ),
+
       body: loading
-<<<<<<< HEAD
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : : errorMessage != null
-    ? Center(
-        child: Text(errorMessage!),
-      )
-    : daftarSiswa.isEmpty
-        ? const Center(
-            child: Text('Data siswa kosong'),
-          )
-=======
-          ? const Center(child: CircularProgressIndicator())
-          : daftarSiswa.isEmpty
-              ? const Center(
-                  child: Text('Data siswa kosong atau gagal dibaca'),
-                )
->>>>>>> a39f153a267fd9260e2ac8e77bbdc69828e82f6b
-              : Column(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Text(
-                        'Daftar Kehadiran Siswa',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+
+          : errorMessage != null
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                          size: 50,
                         ),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: daftarSiswa.length,
-                        itemBuilder: (context, index) {
-                          final siswa = daftarSiswa[index];
-                          return CheckboxListTile(
-                            title: Text(siswa.nama),
-                            subtitle: Text('No. Absen: ${siswa.noAbsen}'),
-                            value: siswa.hadir,
-                            onChanged: (value) {
-                              setState(() {
-                                siswa.hadir = value ?? false;
-                              });
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
+                        const SizedBox(height: 10),
+                        Text(
+                          errorMessage!,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 15),
+                        ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RekapPage(
-                                  daftarSiswa: daftarSiswa,
+                            setState(() {
+                              loading = true;
+                            });
+                            loadSiswa();
+                          },
+                          child: const Text('Coba Lagi'),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+
+              : daftarSiswa.isEmpty
+                  ? const Center(
+                      child: Text('Data siswa belum tersedia'),
+                    )
+
+                  : Column(
+                      children: [
+                        // Judul halaman
+                        const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Text(
+                            'Daftar Kehadiran Siswa',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+
+                        // Ringkasan presensi
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Card(
+                                  color: Colors.green.shade100,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: Column(
+                                      children: [
+                                        const Text('Hadir'),
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          '$jumlahHadir',
+                                          style: const TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
-                            );
-                          },
-                          child: const Text('Simpan'),
+
+                              Expanded(
+                                child: Card(
+                                  color: Colors.red.shade100,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: Column(
+                                      children: [
+                                        const Text('Tidak Hadir'),
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          '$jumlahTidakHadir',
+                                          style: const TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+
+                        const SizedBox(height: 10),
+
+                        // Daftar siswa
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: daftarSiswa.length,
+                            itemBuilder: (context, index) {
+                              final siswa = daftarSiswa[index];
+
+                              return Card(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 5,
+                                ),
+                                child: CheckboxListTile(
+                                  secondary: CircleAvatar(
+                                    backgroundColor:
+                                        siswa.hadir
+                                            ? Colors.green
+                                            : Colors.grey,
+                                    child: Text(
+                                      '${siswa.noAbsen}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+
+                                  title: Text(
+                                    siswa.nama,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+
+                                  subtitle: Text(
+                                    siswa.hadir
+                                        ? 'Status: Hadir'
+                                        : 'Status: Tidak Hadir',
+                                  ),
+
+                                  value: siswa.hadir,
+
+                                  activeColor: Colors.green,
+
+                                  onChanged: (value) {
+                                    setState(() {
+                                      siswa.hadir = value ?? false;
+                                    });
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+
+                        // Tombol simpan
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton.icon(
+                              icon: const Icon(Icons.save),
+                              label: const Text(
+                                'Simpan Presensi',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                foregroundColor: Colors.white,
+                              ),
+
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return RekapPage(
+                                        daftarSiswa: daftarSiswa,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
     );
   }
 }

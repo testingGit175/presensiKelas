@@ -7,7 +7,12 @@ build/
 
 .idea/
 .vscode/
-
 *.iml
 
 .DS_Store
+
+.flutter-plugins
+.flutter-plugins-dependencies
+
+android/local.properties
+ios/Flutter/Generated.xcconfig
