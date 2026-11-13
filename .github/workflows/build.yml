@@ -1,20 +1,46 @@
-- name: Setup Flutter
-  uses: subosito/flutter-action@v2
-  with:
-    channel: stable
-    flutter-version: '3.24.3'
 
-- name: Install Dependencies
-  run: flutter pub get
+name: Build Flutter APK
 
-- name: Analyze Project
-  run: flutter analyze
+on:
+  push:
+    branches:
+      - main
+      - master
 
-- name: Build APK
-  run: flutter build apk --release
+  workflow_dispatch:
 
-- name: Upload APK
-  uses: actions/upload-artifact@v4
-  with:
-    name: aplikasi-presensi
-    path: build/app/outputs/flutter-apk/app-release.apk
+jobs:
+  build:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.24.3'
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Analyze Project
+        run: flutter analyze
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: aplikasi-presensi
+          path: build/app/outputs/flutter-apk/app-release.apk
