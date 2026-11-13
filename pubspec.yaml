@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 name: presensi_kelas
 description: Aplikasi Presensi Kelas XI RPL
@@ -12,40 +11,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true
-
-=======
-name: presensi_kelas
-description: Aplikasi presensi kelas XI RPL
-publish_to: 'none'
-
-version: 1.0.0+1
-
-environment:
-  sdk: '>=3.3.0 <4.0.0'
-
-dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.8
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^3.0.0
-
-flutter:
-  uses-material-design: true
->>>>>>> a39f153a267fd9260e2ac8e77bbdc69828e82f6b
   assets:
     - assets/siswa.json
