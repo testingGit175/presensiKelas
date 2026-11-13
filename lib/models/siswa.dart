@@ -1,4 +1,3 @@
-
 class Siswa {
   int id;
   String nama;
@@ -14,9 +13,11 @@ class Siswa {
 
   factory Siswa.fromJson(Map<String, dynamic> json) {
     return Siswa(
-      id: json['id'],
-      nama: json['nama'],
-      noAbsen: json['noAbsen'],
+      id: json['id'] as int,
+      nama: json['nama'] as String,
+      noAbsen: json['noAbsen'] as int,
+      // Field "hadir" belum ada di siswa.json, sehingga default-nya false.
+      hadir: json['hadir'] == true,
     );
   }
 }
